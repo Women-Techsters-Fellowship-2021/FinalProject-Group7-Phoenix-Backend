@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="eRecycleManagement1_DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Client">
+    <Key>
+      <PropertyRef Name="ClientID" />
+    </Key>
+    <Property Name="ClientID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CompanyName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Location" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Phone_Number" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Enrollments" Relationship="Self.FK_dbo_Enrollment_dbo_Client_ClientID" FromRole="Client" ToRole="Enrollment" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Location" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Phone_Number" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Enrollments" Relationship="Self.FK_dbo_Enrollment_dbo_Customers_CustomerID" FromRole="Customer" ToRole="Enrollment" />
+  </EntityType>
+  <EntityType Name="Enrollment">
+    <Key>
+      <PropertyRef Name="EnrollmentID" />
+    </Key>
+    <Property Name="EnrollmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ClientID" Type="Int32" Nullable="false" />
+    <Property Name="CustomerID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Client" Relationship="Self.FK_dbo_Enrollment_dbo_Client_ClientID" FromRole="Enrollment" ToRole="Client" />
+    <NavigationProperty Name="Customer" Relationship="Self.FK_dbo_Enrollment_dbo_Customers_CustomerID" FromRole="Enrollment" ToRole="Customer" />
+  </EntityType>
+  <Association Name="FK_dbo_Enrollment_dbo_Client_ClientID">
+    <End Role="Client" Type="Self.Client" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Client">
+        <PropertyRef Name="ClientID" />
+      </Principal>
+      <Dependent Role="Enrollment">
+        <PropertyRef Name="ClientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Enrollment_dbo_Customers_CustomerID">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Enrollment">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="eRecycleManagement1_DBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Clients" EntityType="Self.Client" />
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <EntitySet Name="Enrollments" EntityType="Self.Enrollment" />
+    <AssociationSet Name="FK_dbo_Enrollment_dbo_Client_ClientID" Association="Self.FK_dbo_Enrollment_dbo_Client_ClientID">
+      <End Role="Client" EntitySet="Clients" />
+      <End Role="Enrollment" EntitySet="Enrollments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Enrollment_dbo_Customers_CustomerID" Association="Self.FK_dbo_Enrollment_dbo_Customers_CustomerID">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Enrollment" EntitySet="Enrollments" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
